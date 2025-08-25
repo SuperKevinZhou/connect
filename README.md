@@ -8,4 +8,4 @@ This project is hosted on **Codeberg** with a mirror on GitHub. Although commit 
 
 [*Connect* on GitHub](https://github.com/SuperKevinZhou/connect) | [*Connect* on Codeberg](https://codeberg.org/SuperKevinZhou/connect)
 
-We plans to communicate with UI frontend by using RESTful APIs.
+We plan to communicate with UI frontend by using RESTful APIs.
