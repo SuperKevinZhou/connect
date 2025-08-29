@@ -42,5 +42,7 @@ fn main() {
         .arg("zstd")
         .arg("--encryption-algorithm")
         .arg("chacha20")
+        .arg("--multi-thread")
+        .arg("--multi-thread-count 6")
         .spawn();
 }
