@@ -1,8 +1,13 @@
 mod compute_sha;
+mod peer_discovery;
+mod peer_server;
+mod client_api;
 
-use std::env;
+use std::collections::HashMap;
+use std::{env, thread};
 use std::process::Command;
 use std::path::{MAIN_SEPARATOR, PathBuf};
+use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use std::thread::sleep;
 
@@ -21,6 +26,7 @@ fn main() -> anyhow::Result<()> {
 
     let mut easytier_core_path = PathBuf::from(easytier_path);
     easytier_core_path.push(format!("easytier-core{}", EXE_SUFFIX));
+    println!("easytier-core path: {}", easytier_core_path.to_string_lossy());
 
 
     let mut easytier_daemon = Command::new(easytier_core_path)
@@ -32,7 +38,9 @@ fn main() -> anyhow::Result<()> {
         .arg("-p")
         .arg("tcp://public.easytier.top:11010")
         .arg("-p")
-        .arg("tcp://gz.minebg.top:11010")
+        .arg("tcp://turn.hb.629957.xyz:11010")
+        .arg("-p")
+        .arg("tcp://8.138.6.53:11010")
         .arg("-p")
         .arg("tcp://turn.js.629957.xyz:11012")
         .arg("-p")
@@ -54,6 +62,15 @@ fn main() -> anyhow::Result<()> {
 
     println!("Easytier started, waiting for 5 seconds...");
     sleep(Duration::new(5, 0));
+
+    let signed_in = Arc::new(Mutex::new(false));
+    let user_data_info = Arc::new(Mutex::new(HashMap::<String, String>::new()));
+
+    let (signed_in_copy_1, user_data_info_copy_1) = (signed_in.clone(), user_data_info.clone());
+    thread::spawn(|| {
+        // println!("Client API started!");
+        client_api::sync_server(signed_in_copy_1, user_data_info_copy_1)
+    });
 
     easytier_daemon.wait().context("Easytier didn't start.")?;
 
