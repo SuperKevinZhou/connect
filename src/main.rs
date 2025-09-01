@@ -4,13 +4,15 @@ use std::env;
 use std::process::{Command, Child};
 use std::path::{MAIN_SEPARATOR, PathBuf};
 
+use anyhow::Context;
+
 #[cfg(target_os = "windows")]
 const EXE_SUFFIX: &str = ".exe";
 
 #[cfg(not(target_os = "windows"))]
 const EXE_SUFFIX: &str = "";
 
-fn main() {
+fn main() -> anyhow::Result<()> {
     let easytier_path = env::var("EASYTIER_PATH").unwrap_or(format!(".{}", MAIN_SEPARATOR));
     let network_name = env::var("CONNECT_CHAT_NETWORK_NAME").unwrap_or("ConnectChat_CENTER".to_string());
     let network_secret = env::var("CONNECT_CHAT_NETWORK_SECRET").unwrap_or(compute_sha::compute_sha512(&network_name));
@@ -45,5 +47,10 @@ fn main() {
         .arg("--multi-thread")
         .arg("--multi-thread-count")
         .arg("6")
-        .spawn();
+        .spawn()
+        .context("Error starting easytier daemon.")?;
+
+    easytier_daemon.wait().context("Easytier didn't start.")?;
+
+    Ok(())
 }
