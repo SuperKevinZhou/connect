@@ -3,6 +3,8 @@ mod compute_sha;
 use std::env;
 use std::process::{Command, Child};
 use std::path::{MAIN_SEPARATOR, PathBuf};
+use std::time::Duration;
+use std::thread::sleep;
 
 use anyhow::Context;
 
@@ -49,6 +51,9 @@ fn main() -> anyhow::Result<()> {
         .arg("6")
         .spawn()
         .context("Error starting easytier daemon.")?;
+
+    println!("Easytier started, waiting for 5 seconds...");
+    sleep(Duration::new(5, 0));
 
     easytier_daemon.wait().context("Easytier didn't start.")?;
 
