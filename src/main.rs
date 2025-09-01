@@ -1,7 +1,7 @@
 mod compute_sha;
 
 use std::env;
-use std::process::{Command, Child};
+use std::process::Command;
 use std::path::{MAIN_SEPARATOR, PathBuf};
 use std::time::Duration;
 use std::thread::sleep;
