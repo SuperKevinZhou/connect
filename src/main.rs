@@ -43,6 +43,7 @@ fn main() {
         .arg("--encryption-algorithm")
         .arg("chacha20")
         .arg("--multi-thread")
-        .arg("--multi-thread-count 6")
+        .arg("--multi-thread-count")
+        .arg("6")
         .spawn();
 }
