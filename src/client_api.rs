@@ -17,8 +17,8 @@ async fn login(Query(params): Query<HashMap<String, String>>, State(state): Stat
         "Error: `user_name` and `user_uuid` not given".to_string()
     } else {
         *state.user_data_info.lock().unwrap().entry("user_name".to_string()).and_modify(|e| *e = params.get(&"user_name".to_string()).unwrap().to_string()).or_insert_with(|| params.get(&"user_name".to_string()).unwrap().to_string()) = params.get(&"user_name".to_string()).unwrap().to_string();
-
-
+        *state.user_data_info.lock().unwrap().entry("user_uuid".to_string()).and_modify(|e| *e = params.get(&"user_uuid".to_string()).unwrap().to_string()).or_insert_with(|| params.get(&"user_uuid".to_string()).unwrap().to_string()) = params.get(&"user_uuid".to_string()).unwrap().to_string();
+        *state.signed_in.lock().unwrap() = true;
         "Login successful".to_string()
     }
 }
@@ -26,7 +26,7 @@ async fn login(Query(params): Query<HashMap<String, String>>, State(state): Stat
 async fn server(signed_in: Arc<Mutex<bool>>, user_data_info: Arc<Mutex<HashMap<String, String>>>) {
     println!("Client API server started!");
     let app = Router::new()
-        // .route("/login", get(login))
+        .route("/login", get(login))
         .with_state(AppState { signed_in, user_data_info });
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
