@@ -29,7 +29,7 @@ async fn server(signed_in: Arc<Mutex<bool>>, user_data_info: Arc<Mutex<HashMap<S
         .route("/login", get(login))
         .with_state(AppState { signed_in, user_data_info });
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
 
